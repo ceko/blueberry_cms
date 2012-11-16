@@ -1,10 +1,10 @@
-from blueberry.core.templates import HTMLTemplateController 
+from base import BaseHTMLTemplateController 
 
 
-class homepage(HTMLTemplateController):    
+class homepage(BaseHTMLTemplateController):    
     template = 'homepage.html'
         
     def __init__(self, *args, **kwargs):
         super(homepage, self).__init__(*args, **kwargs)
-        #self.load_panel('main_content')
+        
     

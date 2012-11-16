@@ -8,136 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Theme'
-        db.create_table('core_theme', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('class_path', self.gf('django.db.models.fields.CharField')(default='', unique=True, max_length=50)),
-            ('pretty_name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('priority', self.gf('django.db.models.fields.IntegerField')(unique=True)),
-        ))
-        db.send_create_signal('core', ['Theme'])
+        # Removing unique constraint on 'Block', fields ['alias', 'panel']
+        db.delete_unique('core_block', ['alias', 'panel_id'])
 
-        # Adding model 'ResourceTemplate'
-        db.create_table('core_resourcetemplate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('class_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('pretty_name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal('core', ['ResourceTemplate'])
-
-        # Adding model 'RevisionGroup'
-        db.create_table('core_revisiongroup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('core', ['RevisionGroup'])
-
-        # Adding model 'Revision'
-        db.create_table('core_revision', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('revision_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.RevisionGroup'])),
-        ))
-        db.send_create_signal('core', ['Revision'])
-
-        # Adding model 'Resource'
-        db.create_table('core_resource', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('revision', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Revision'])),
-            ('template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.ResourceTemplate'])),
-            ('path_suffix', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('core', ['Resource'])
-
-        # Adding model 'ResourceMap'
-        db.create_table('core_resourcemap', (
-            ('revision', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Revision'])),
-            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.ResourceMap'], null=True, blank=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=500, primary_key=True)),
-            ('resource', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Resource'])),
-        ))
-        db.send_create_signal('core', ['ResourceMap'])
-
-        # Adding model 'PanelTemplate'
-        db.create_table('core_paneltemplate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('class_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('alias', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('core', ['PanelTemplate'])
-
-        # Adding model 'Panel'
-        db.create_table('core_panel', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('panel_template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.PanelTemplate'])),
-            ('alias', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('resource', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Resource'])),
-        ))
-        db.send_create_signal('core', ['Panel'])
-
-        # Adding unique constraint on 'Panel', fields ['resource', 'alias']
-        db.create_unique('core_panel', ['resource_id', 'alias'])
-
-        # Adding model 'BlockTemplate'
-        db.create_table('core_blocktemplate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('class_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('alias', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('core', ['BlockTemplate'])
-
-        # Adding model 'Block'
-        db.create_table('core_block', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('block_template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.BlockTemplate'])),
-            ('alias', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Panel'])),
-        ))
-        db.send_create_signal('core', ['Block'])
-
-        # Adding unique constraint on 'Block', fields ['panel', 'alias']
-        db.create_unique('core_block', ['panel_id', 'alias'])
+        # Deleting field 'Block.alias'
+        db.delete_column('core_block', 'alias')
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Block', fields ['panel', 'alias']
-        db.delete_unique('core_block', ['panel_id', 'alias'])
 
-        # Removing unique constraint on 'Panel', fields ['resource', 'alias']
-        db.delete_unique('core_panel', ['resource_id', 'alias'])
-
-        # Deleting model 'Theme'
-        db.delete_table('core_theme')
-
-        # Deleting model 'ResourceTemplate'
-        db.delete_table('core_resourcetemplate')
-
-        # Deleting model 'RevisionGroup'
-        db.delete_table('core_revisiongroup')
-
-        # Deleting model 'Revision'
-        db.delete_table('core_revision')
-
-        # Deleting model 'Resource'
-        db.delete_table('core_resource')
-
-        # Deleting model 'ResourceMap'
-        db.delete_table('core_resourcemap')
-
-        # Deleting model 'PanelTemplate'
-        db.delete_table('core_paneltemplate')
-
-        # Deleting model 'Panel'
-        db.delete_table('core_panel')
-
-        # Deleting model 'BlockTemplate'
-        db.delete_table('core_blocktemplate')
-
-        # Deleting model 'Block'
-        db.delete_table('core_block')
+        # User chose to not deal with backwards NULL issues for 'Block.alias'
+        raise RuntimeError("Cannot reverse this migration. 'Block.alias' and its values cannot be restored.")
+        # Adding unique constraint on 'Block', fields ['alias', 'panel']
+        db.create_unique('core_block', ['alias', 'panel_id'])
 
 
     models = {
@@ -178,8 +61,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'core.block': {
-            'Meta': {'unique_together': "(('panel', 'alias'),)", 'object_name': 'Block'},
-            'alias': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'Meta': {'object_name': 'Block'},
             'block_template': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.BlockTemplate']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'panel': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Panel']"})

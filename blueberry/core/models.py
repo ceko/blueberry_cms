@@ -19,7 +19,7 @@ class Theme(models.Model):
         
         super(Theme, self).save(*args, **kwargs)
     
-class ResourceTemplate(models.Model):
+class ResourceTemplate(models.Model):    
     #The filesystem name.    
     class_path = models.CharField(max_length = 100)    
     pretty_name = models.CharField(max_length = 50)
@@ -27,13 +27,17 @@ class ResourceTemplate(models.Model):
     def __unicode__(self):
         return self.pretty_name
 
-class Revision(models.Model):
+class RevisionGroup(models.Model):
+    created_on = models.DateTimeField(auto_now = True)
+
+class Revision(models.Model):    
     created_on = models.DateTimeField(auto_now = True)
     created_by = models.ForeignKey(User)
+    revision_group = models.ForeignKey(RevisionGroup)
     
     def __unicode__(self):
         return self.created_on.isoformat()
-                
+                    
 class Resource(models.Model):        
     revision = models.ForeignKey(Revision)    
     template = models.ForeignKey(ResourceTemplate)
@@ -52,20 +56,58 @@ class ResourceMap(models.Model):
     
     def __unicode__(self):
         return self.url
-    
-class Panel(models.Model):
-    class_path = models.CharField(max_length = 100)
-    resource = models.ForeignKey(Resource)    
+        
+class Panel(models.Model):    
     alias = models.CharField(max_length = 100)
+    resource = models.ForeignKey(Resource)
+    
+    def __init__(self, *args, **kwargs):
+        super(Panel, self).__init__(*args, **kwargs)
+        self.transient = False
+    
+    @staticmethod
+    def create_initial(alias, blueberry_context):
+        panel = Panel()        
+        panel.alias = alias
+        panel.resource = blueberry_context.resource_map.resource
+        
+        return panel
+    
+    def save(self, *args, **kwargs):
+        if self.transient:
+            raise Exception("Can't save a transient Panel.")
+            
+        super(Panel, self).save(*args, **kwargs)
     
     class Meta:
         unique_together = (('resource', 'alias'),)
-    
-class Block(models.Model):    
+
+class BlockTemplate(models.Model):
     class_path = models.CharField(max_length = 100)
-    panel = models.ForeignKey(Panel)
     alias = models.CharField(max_length = 100)
     
-    class Meta:
-        unique_together = (('panel', 'alias'),)
+    def __unicode__(self):
+        return "{0} ({1})".format(self.alias, self.class_path)
+    
+class Block(models.Model):   
+    template= models.ForeignKey(BlockTemplate)    
+    panel = models.ForeignKey(Panel)    
+    
+    def __init__(self, *args, **kwargs):
+        super(Block, self).__init__(*args, **kwargs)
+        self.transient = False
+    
+    @staticmethod
+    def create_initial(panel):
+        block = Block()
+        block.panel = panel
+        
+        return block
+    
+    def save(self, *args, **kwargs):
+        if self.transient:
+            raise Exception("Can't save a transient Block.")
+    
+    def __unicode__(self):
+        return unicode(self.panel_id)        
      

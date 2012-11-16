@@ -1,5 +1,5 @@
-from blueberry.core.templates import PanelBase
+from blueberry.core.templates import PanelControllerBase
 
 
-class default_panel(PanelBase):
+class default_panel(PanelControllerBase):
     pass

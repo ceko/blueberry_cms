@@ -48,3 +48,19 @@ body {
 .content {
 	margin:10px 10px 10px 20px;
 }
+
+.berry_edit_panel {
+	padding:2px;
+	border:2px dashed #333;
+}
+
+.berry_edit_block {
+	border:2px dashed #CCC;
+	margin-bottom:2px;
+}
+
+.berry_add_block {
+	background:#666;
+	color:#FFF;
+	padding:5px;
+}

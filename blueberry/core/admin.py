@@ -29,10 +29,20 @@ class PanelAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Panel, PanelAdmin)
 
+class BlockTemplateAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(models.BlockTemplate, BlockTemplateAdmin)
+
 class BlockAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(models.Block, BlockAdmin)
+
+class RevisionGroupAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(models.RevisionGroup, RevisionGroupAdmin)
 
 class RevisionAdmin(admin.ModelAdmin):
     pass

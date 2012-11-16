@@ -24,6 +24,7 @@ def smart_class_loader(module_name):
             theme.class_path,
             module_name
         )
+        
         try:
             class_name = this_module_name.split('.')[-1]
             module = __import__(this_module_name, fromlist = [class_name,])                    
