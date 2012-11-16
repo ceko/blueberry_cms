@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="{{ STATIC_URL }}/css/base.css" /> 
+		{% block head %}
+		{% endblock %}
+	</head>
+	<body>
+		<div class='wrapper'>
+			<div class='header-links'>
+				<ul>
+					<li><a href='/'>Home</a></li>
+					<li><a href='/about-us/'>About Us</a></li>
+					<li><a href='/contact-us/'>Contact</a></li>
+				</ul>	
+			</div>
+			<div class='breadcrumbs'>
+				{{ controller.blocks.breadcrumbs }}
+			</div>
+			<div class='content'>
+				{% block content %}
+				{% endblock %}
+			</div>
+		</div>
+	</body>
+</html>

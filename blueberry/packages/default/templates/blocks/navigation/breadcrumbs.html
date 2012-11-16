@@ -1,0 +1,8 @@
+{% for resource_map in block.resource_hierarchy %}
+	{% if forloop.last %}
+		{{ resource_map.resource.title }}		
+	{% else %}
+		<a href='{{ resource_map.url }}'>{{ resource_map.resource.title }}</a>
+		&raquo;		
+	{% endif %}
+{% endfor %}

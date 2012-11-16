@@ -1,0 +1,10 @@
+BEGIN;
+DROP TABLE "core_block";
+DROP TABLE "core_panel";
+ALTER TABLE "core_resourcemap" DROP CONSTRAINT "parent_id_refs_url_517de877";
+DROP TABLE "core_resourcemap";
+DROP TABLE "core_resource";
+DROP TABLE "core_revision";
+DROP TABLE "core_resourcetemplate";
+DROP TABLE "core_theme";
+COMMIT;

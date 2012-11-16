@@ -1,0 +1,50 @@
+body {
+	background:#333;
+	padding:20px;	
+}
+
+.wrapper {
+	width:800px;
+	margin:auto;
+	background:#FFF;	
+}
+
+.header-links ul {
+	list-style: none;	
+	margin:0px;
+	padding:20px;
+	font-size:22px;	
+}
+
+.header-links li {
+	display:inline-block;
+	margin-right:20px;
+}
+
+.header-links a {
+	color:#000;
+	text-decoration:none;	
+}
+
+.header-links a:hover, .header-links a.active {
+	border-bottom:1px solid #CCC;
+}
+
+.breadcrumbs {
+	margin-left:20px;
+	color:#333;
+	font-size:12px;	
+}
+
+.breadcrumbs a {
+	color:#999;
+	text-decoration:none;
+}
+
+.breadcrumbs a:hover {
+	color:000;
+}
+
+.content {
+	margin:10px 10px 10px 20px;
+}
