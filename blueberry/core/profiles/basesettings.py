@@ -1,10 +1,10 @@
 import os.path
 import secret_settings
+import blueberry.core.packages.settings
 
 
+CORE_MODULE_ROOT = 'blueberry.core'
 PROJECT_ROOT = "/".join(os.path.realpath(__file__).split('/')[:-3]) + "/"
-PACKAGES_ROOT = PROJECT_ROOT + 'packages/'
-PACKAGES_MODULE_ROOT = 'blueberry.packages'
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -80,6 +80,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -88,6 +89,12 @@ ROOT_URLCONF = 'core.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'core.wsgi.application'
+
+#Package order determines the order in which resources are loaded.  Customizations 
+#Should be at the top of the list, default fallback functionality should be at the bottom.
+PACKAGES = (
+    'blueberry.seed',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -98,10 +105,30 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',    
     'django.contrib.admin',
+    'pipeline',
     'core',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+) + PACKAGES
+
+PIPELINE = False
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_CSS = {}
+PIPELINE_JS = {}
+PIPELINE_CSS_COMPRESSOR = 'blueberry.core.flow.DefaultCompressor'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
+PIPELINE_LESS_BINARY = '/usr/bin/lessc'
+PIPELINE_COFFEE_BINARY = '/usr/bin/coffee'
+PIPELINE_COMPILERS = (
+  'pipeline.compilers.coffee.CoffeeScriptCompiler',
+  'pipeline.compilers.less.LessCompiler',
 )
+
+TEMPLATE_DIRS = ()
+for ps in blueberry.core.packages.settings.get_package_settings(PACKAGES):
+    TEMPLATE_DIRS += ps.TEMPLATE_DIRS
+    PIPELINE_CSS.update(ps.PIPELINE_CSS)
+    PIPELINE_JS.update(ps.PIPELINE_JS)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

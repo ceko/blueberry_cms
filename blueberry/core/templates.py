@@ -1,10 +1,8 @@
 from utils import smart_class_loader
 from django.utils.safestring import mark_safe
-from django.conf import settings
 from django.template.loader import render_to_string
-from django.template import RequestContext
 import models
-from pipeline import BlueberryContext
+import collections
 from html import HTML
 
 
@@ -81,15 +79,41 @@ class PanelLoader(object):
     def load_persistent(self, panel, persistence_level, class_path=None):
         panel_class = self.load_type(class_path)        
         return panel_class(panel, self.blueberry_context, persistence_level, self.controller)        
-    
-    #I think this may only be used when loading transient panels, so this could probably be refactored.
+        
     def load_unbound(self, alias, persistence_level, class_path=None):        
         panel_class = self.load_type(class_path)
         panel = models.Panel.create_initial(alias, self.blueberry_context)
         if persistence_level == PANEL_PERSISTENCE_LEVELS._none:
             panel.transient = True
             
-        return panel_class(panel, self.blueberry_context, PANEL_PERSISTENCE_LEVELS._none, self.controller)        
+        return panel_class(panel, self.blueberry_context, persistence_level, self.controller)        
+    
+class SmartPanels(collections.MutableMapping):
+        
+    def __init__(self, controller, *args, **kwargs):
+        self.controller = controller
+        self._data = {}           
+    
+    def __iter__(self):
+        return self._data.__iter__()
+    
+    def __len__(self):
+        return len(self._data)
+    
+    def __setitem__(self, key, value):
+        self._data[key] = value
+        
+    def __delitem__(self, key):
+        del self._data['key']
+    
+    def __getitem__(self, key):
+        if self._data.has_key(key):
+            return self._data[key]
+        else:
+            return self.controller.register_panel(key)
+    
+    def has_key(self, key):
+        return self._data.has_key(key)
     
 class ControllerBase(object):
     
@@ -98,9 +122,9 @@ class ControllerBase(object):
         self.panel_loader = PanelLoader(self, blueberry_context)
         self.parent = parent
         
-        self.panels = {}        
+        self.panels = SmartPanels(self)        
         self._load_persistent_panels()
-    
+            
     def _load_persistent_panels(self):
         """
         Loads persistent panel and block information into the panel dictionary.  The blocks may be finished loading, or they
@@ -185,32 +209,27 @@ class PanelControllerBase(object):
     def __unicode__(self):
         output = u''        
         for key, value in self.blocks.items():
-            output += value.__unicode__()
+            output += unicode(value)
         
         return mark_safe(HTMLBuilder.wrap_panel(self, output))
 
 
 class HTMLBuilder(object):
     
+    panel_editor_template = 'admin/editable_panel.html'
+    block_editor_template = 'admin/editable_block.html'
+    
     @staticmethod
     def wrap_panel(panel, panel_output):
         if panel.blueberry_context.request.user.is_authenticated() and not panel.is_transient():
-            h = HTML()
-            d = h.div(klass = "berry_edit_panel")
-            d.text(panel_output, escape=False)
-            d = h.div(klass = "berry_add_block", panel_id = unicode(panel.model.id))
-            d.text("Add Block")
-            return h.__unicode__()
+            return render_to_string(HTMLBuilder.panel_editor_template, { 'content' : panel_output }, panel.blueberry_context)            
         else:
             return panel_output
     
     @staticmethod
-    def wrap_block(block, block_output):
-        if block.blueberry_context.request.user.is_authenticated() and not block.is_transient():
-            h = HTML()
-            d = h.div(klass = "berry_edit_block", block_id = unicode(block.model.id))
-            d.text(block_output, escape=False)
-            return h.__unicode__()
+    def wrap_block(block, block_output):        
+        if block.blueberry_context.request.user.is_authenticated() and not block.is_transient():            
+            return render_to_string(HTMLBuilder.block_editor_template, { 'content' : block_output }, block.blueberry_context)            
         else:
             return block_output
     

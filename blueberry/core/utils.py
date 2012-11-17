@@ -1,7 +1,6 @@
 from django.conf import settings
+import packages.settings
 from south.models import MigrationHistory
-from os import path 
-import themes
 import unicodedata
 import re
 
@@ -9,6 +8,7 @@ import re
 class ControllerNotFoundError(Exception):
     pass
 
+#This may not be needed anymore
 def database_is_initialized():
     return MigrationHistory.objects.filter(app_name = 'core').count() > 0
 
@@ -18,10 +18,9 @@ def smart_class_loader(module_name):
     The class must be named the same as the end path of the module.
     Ex: blueberry.core.packages.default.templatecontrollers.homepage with class homepage.
     """    
-    for theme in settings.INSTALLED_THEMES:
-        this_module_name = "{0}.{1}.{2}".format(
-            settings.PACKAGES_MODULE_ROOT,
-            theme.class_path,
+    for package in settings.PACKAGES:
+        this_module_name = "{0}.{1}".format(
+            package,
             module_name
         )
         

@@ -43,5 +43,6 @@ INSTALLED_APPS += ('debug_toolbar',)
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INTERNAL_IPS = ('192.168.1.114',)

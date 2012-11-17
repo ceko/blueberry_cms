@@ -1,8 +1,12 @@
+{% load compressed %}
+
 <!doctype html>
 <html>
 	<head>
 		<title></title>
-		<link rel="stylesheet" href="{{ STATIC_URL }}/css/base.css" /> 
+		{% compressed_css 'core' %}
+		{% compressed_js 'jquery' %}
+		{% compressed_js 'core' %}
 		{% block head %}
 		{% endblock %}
 	</head>
@@ -22,6 +26,7 @@
 				{% block content %}
 				{% endblock %}
 			</div>
+			<div style='clear:both;'></div>
 		</div>
 	</body>
 </html>
