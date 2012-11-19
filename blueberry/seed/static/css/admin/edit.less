@@ -1,0 +1,83 @@
+.berry_edit_panel {
+	padding:2px;
+	border:1px dashed #666;
+	
+	&.hover {
+		border:1px solid #666;		
+	}
+}
+
+.panel_title {
+	font-size:.8em;
+	text-align:center;
+	color:#CCC;
+}
+
+.berry_edit_block {
+	border:1px dashed red;
+	margin-bottom:2px;
+	
+	&.hover {
+		border:1px solid red;
+		cursor:pointer;
+	}
+}
+
+.berry_add_block {
+	background:#666;
+	color:#FFF;
+	padding:5px;
+	text-align:center;
+	cursor:pointer;
+	
+	&:hover {
+		background:#000;
+	}	
+}
+
+.berry_menu_widget {
+
+	@border-radius: 5px;
+
+	background:#FFF;
+	border:1px solid #999;
+	min-width:150px;
+	border-radius:@border-radius;
+	box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.2);
+	
+	
+	
+	.berry_menu_widgetitem {
+		cursor:pointer;
+		border-bottom:1px solid #DDD;
+		padding:3px 3px 3px 25px;
+		
+		&:first-of-type {
+			border-top-left-radius:@border-radius;
+			border-top-right-radius:@border-radius;
+		}
+		
+		&:last-of-type {
+			border-bottom:none;
+			border-bottom-left-radius:@border-radius;
+			border-bottom-right-radius:@border-radius;
+		}
+				
+		&.close_menu {
+			background:url('../../images/icons/arrow_left.png') no-repeat 3px center;
+		}
+		
+		&.edit {
+			background:url('../../images/icons/edit.png') no-repeat 3px center;
+		}
+		
+		&.delete {
+			background:url('../../images/icons/delete.png') no-repeat 3px center;
+		}
+		
+		&:hover {
+			background-color:#EEF;
+		}
+	}
+	
+}

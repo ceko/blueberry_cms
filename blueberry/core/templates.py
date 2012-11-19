@@ -76,7 +76,7 @@ class PanelLoader(object):
             raise PanelLoaderError("Could not find panel for " + class_path)
         return panel_class
         
-    def load_persistent(self, panel, persistence_level, class_path=None):
+    def load_persistent(self, panel, persistence_level, class_path=None):        
         panel_class = self.load_type(class_path)        
         return panel_class(panel, self.blueberry_context, persistence_level, self.controller)        
         
@@ -107,8 +107,14 @@ class SmartPanels(collections.MutableMapping):
         del self._data['key']
     
     def __getitem__(self, key):
-        if self._data.has_key(key):
-            return self._data[key]
+        test = key
+        if type(key) is models.Panel:
+            test = key.alias
+            
+        if self._data.has_key(test):
+            return self._data[test]
+        elif type(key) is models.Panel:
+            return self.controller._load_persistent_panel(key)
         else:
             return self.controller.register_panel(key)
     
@@ -127,18 +133,23 @@ class ControllerBase(object):
             
     def _load_persistent_panels(self):
         """
-        Loads persistent panel and block information into the panel dictionary.  The blocks may be finished loading, or they
+        Loads persistent panel and block information into the panel dictionary.  The blocks may be finished loading after this method, or they
         may need another database call to populate with persisted information.
         """        
         blocks = models.Block.objects.select_related().filter(panel__resource__exact = self.blueberry_context.resource_map.resource_id)        
-        for block in blocks:
-            block_container = self.panels.get(block.panel.alias, None)
-            if not block_container:
-                block_container = self.panel_loader.load_persistent(block.panel, PANEL_PERSISTENCE_LEVELS._page)
-                self.panels[block.panel.alias] = block_container                
+        for block in blocks:            
+            block_container = self.panels[block.panel]
+            #if not block_container:
+            #    block_container = self.panel_loader.load_persistent(block.panel, PANEL_PERSISTENCE_LEVELS._page)
+            #    self.panels[block.panel.alias] = block_container                
             
             loaded_block = block_container.block_loader.load_persistent(block, BLOCK_PERSISTENCE_LEVELS._page)
             block_container.blocks[loaded_block.model.id] = loaded_block      
+    
+    def _load_persistent_panel(self, panel):
+        loaded_panel = self.panel_loader.load_persistent(panel, PANEL_PERSISTENCE_LEVELS._page)
+        self.panels[panel.alias] = loaded_panel 
+        return loaded_panel
      
     def register_panel(self, panel_id, class_path = 'default_panel', persistence_level = PANEL_PERSISTENCE_LEVELS._page):
         """
@@ -159,6 +170,8 @@ class HTMLTemplateController(ControllerBase):
         
 class BlockControllerBase(ControllerBase):
     
+    edit_template = 'admin/blocks/editors/autoform.html'
+    
     def __init__(self, block, blueberry_context, persistence_level = BLOCK_PERSISTENCE_LEVELS._inherit, parent = None):
         self.model = block
         self.blueberry_context = blueberry_context
@@ -171,13 +184,16 @@ class BlockControllerBase(ControllerBase):
             self.parent.persistence_level == PANEL_PERSISTENCE_LEVELS._none and \
             self.persistence_level == BLOCK_PERSISTENCE_LEVELS._inherit
             
+    def get_template_data(self):
+        return {}
     
     def __unicode__(self):
         template_vars = {
             'block' : self,
             'panel' : self.parent,
             'controller' : self.parent,
-        }        
+        }
+        template_vars.update(self.get_template_data())        
         output = render_to_string(self.template, template_vars, context_instance = self.blueberry_context)
         return mark_safe(HTMLBuilder.wrap_block(self, output))
 
@@ -222,14 +238,18 @@ class HTMLBuilder(object):
     @staticmethod
     def wrap_panel(panel, panel_output):
         if panel.blueberry_context.request.user.is_authenticated() and not panel.is_transient():
-            return render_to_string(HTMLBuilder.panel_editor_template, { 'content' : panel_output }, panel.blueberry_context)            
+            return render_to_string(
+                HTMLBuilder.panel_editor_template, 
+                { 'content' : panel_output, 'panel' : panel, 'add_url' : 'select-new-block-template/%s' % (panel.model.id or panel.model.alias) }, 
+                panel.blueberry_context
+            )            
         else:
             return panel_output
     
     @staticmethod
     def wrap_block(block, block_output):        
         if block.blueberry_context.request.user.is_authenticated() and not block.is_transient():            
-            return render_to_string(HTMLBuilder.block_editor_template, { 'content' : block_output }, block.blueberry_context)            
+            return render_to_string(HTMLBuilder.block_editor_template, { 'block': block, 'content' : block_output }, block.blueberry_context)            
         else:
             return block_output
     

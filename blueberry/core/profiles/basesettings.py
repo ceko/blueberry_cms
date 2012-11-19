@@ -69,9 +69,10 @@ SECRET_KEY = secret_settings.SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,7 +81,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'pipeline.middleware.MinifyHTMLMiddleware',
+    #'pipeline.middleware.MinifyHTMLMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -107,16 +108,17 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'pipeline',
     'core',
+    'gunicorn',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 ) + PACKAGES
 
-PIPELINE = False
+PIPELINE = True
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_CSS = {}
 PIPELINE_JS = {}
 PIPELINE_CSS_COMPRESSOR = 'blueberry.core.flow.DefaultCompressor'
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
+#Using yuglify to compress javascript, found at the default location. 
 PIPELINE_LESS_BINARY = '/usr/bin/lessc'
 PIPELINE_COFFEE_BINARY = '/usr/bin/coffee'
 PIPELINE_COMPILERS = (

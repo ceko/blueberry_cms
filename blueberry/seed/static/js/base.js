@@ -2,10 +2,8 @@
 (function() {
 
   $(function() {
-    return $('#main_content div').each(function(i, e) {
-      if (i !== 1) {
-        return alert(this);
-      }
+    return $('.berry_edit_panel').each(function(i, e) {
+      return $(e).hide().fadeIn();
     });
   });
 

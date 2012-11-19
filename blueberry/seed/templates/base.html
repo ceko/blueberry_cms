@@ -3,10 +3,12 @@
 <!doctype html>
 <html>
 	<head>
-		<title></title>
+		<title>
+			{% block title %}
+			{% endblock %}
+		</title>
 		{% compressed_css 'core' %}
-		{% compressed_js 'jquery' %}
-		{% compressed_js 'core' %}
+		{% compressed_css 'admin' %}		
 		{% block head %}
 		{% endblock %}
 	</head>
@@ -27,6 +29,8 @@
 				{% endblock %}
 			</div>
 			<div style='clear:both;'></div>
-		</div>
+		</div>		
+		{% compressed_js 'core' %}
+		{% compressed_js 'edit' %}
 	</body>
 </html>

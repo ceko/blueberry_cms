@@ -3,6 +3,7 @@ from secret_settings import DATABASE_SETTINGS
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+PIPELINE = False
 
 DATABASES = {
     'default': {
@@ -29,6 +30,11 @@ MEDIA_URL = '/uploads/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = PROJECT_ROOT + 'static/'
+
+TEMPLATE_LOADERS = ( 
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',    
+)
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

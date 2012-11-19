@@ -108,6 +108,8 @@ class Block(models.Model):
         if self.transient:
             raise Exception("Can't save a transient Block.")
     
+        super(Block, self).save(*args, **kwargs)
+    
     def __unicode__(self):
         return unicode(self.panel_id)        
      

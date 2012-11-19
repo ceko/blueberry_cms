@@ -1,6 +1,6 @@
-from blueberry.core.templates import HTMLTemplateController
+from base import BaseHTMLTemplateController
 
 
-class threecolumn(HTMLTemplateController):    
+class threecolumn(BaseHTMLTemplateController):    
     template = 'threecolumn.html'
     

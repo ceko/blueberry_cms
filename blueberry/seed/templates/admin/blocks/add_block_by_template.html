@@ -1,0 +1,20 @@
+{% extends 'admin/iframe_base.html' %}
+{% block content %}
+	<div id='add-block-by-template'>
+		<form action='.' method='POST'>
+			{% csrf_token %}
+			{{ add_form }}<br />
+			<br />
+			<input type='submit' />
+		</form>
+	</div>
+{% endblock %}
+{% block footerscripts %}
+	<script type="text/javascript">
+		(function($) {
+			$(function() {
+				parent.jQuery.colorbox.resize({ width : '{{ form_width }}px]', height : '{{ form_height }}px' })
+			})		
+		})(jQuery)
+	</script>
+{% endblock %}

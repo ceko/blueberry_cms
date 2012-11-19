@@ -1,5 +1,7 @@
 import sys
 from threading import Lock
+import django.conf
+
 
 _p = []
 #TODO: If a path is sent that is different, refresh the cache.
@@ -30,5 +32,8 @@ class PackageSettings(object):
             return object.__getattribute__(self, '_settings').__getattribute__(name)
         except AttributeError:
             return object.__getattribute__(self, name)
-        
-    
+     
+    def urlpatterns(self):        
+        urls_path = '{0}.urls'.format(self._klass_path)
+        __import__(urls_path)
+        return sys.modules[urls_path].urlpatterns

@@ -1,0 +1,14 @@
+{% extends 'admin/iframe_base.html' %}
+{% block content %}
+	<div id='add-block'>
+		<h1>Add Block to {{ panel_alias }}</h1>
+		<div style='clear:both;'></div>
+		<ul class='blocks'>
+			{% for block in persistent_blocks %}
+				<li>
+					<a href='{{ base_resource_url }}add-block-by-template/{{ block.id }}/{{ panel_id }}/'>{{ block.alias }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>	
+{% endblock %}

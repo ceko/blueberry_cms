@@ -1,0 +1,13 @@
+{% extends 'admin/iframe_base.html' %}
+{% block content %}	
+	Your block has been added successfully.  You'll be redirected to your page now.	
+{% endblock %}
+{% block footerscripts %}
+	<script type="text/javascript">
+		(function($) {
+			$(function() {
+				parent.location = '{{ base_resource_url }}';
+			})		
+		})(jQuery)
+	</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% load compressed %}
+
+<!doctype html>
+<html>
+	<head>
+		<title>
+			{{ title }}
+			{% block title %}
+			{% endblock %}
+		</title>
+		{% compressed_css 'admin' %}
+	</head>
+	<body>
+		{% block content %}
+		{% endblock %}
+		{% compressed_js 'core' %}
+		{% block footerscripts %}
+		{% endblock %}
+	</body>	
+</html>

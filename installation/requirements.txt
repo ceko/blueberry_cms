@@ -1,6 +1,12 @@
 Django==1.4.2
 South==0.7.6
+cssmin==0.1.4
 django-debug-toolbar==0.9.4
+django-pipeline==1.2.21
+## FIXME: could not find svn URL in dependency_links for this package:
+flup==1.0.3.dev-20110405
+gunicorn==0.15.0
 html==1.16
+jsmin==2.0.2
 psycopg2==2.4.5
 wsgiref==0.1.2

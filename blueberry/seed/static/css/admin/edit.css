@@ -1,0 +1,63 @@
+.berry_edit_panel {
+  padding: 2px;
+  border: 1px dashed #666;
+}
+.berry_edit_panel.hover {
+  border: 1px solid #666;
+}
+.panel_title {
+  font-size: .8em;
+  text-align: center;
+  color: #CCC;
+}
+.berry_edit_block {
+  border: 1px dashed red;
+  margin-bottom: 2px;
+}
+.berry_edit_block.hover {
+  border: 1px solid red;
+  cursor: pointer;
+}
+.berry_add_block {
+  background: #666;
+  color: #FFF;
+  padding: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+.berry_add_block:hover {
+  background: #000;
+}
+.berry_menu_widget {
+  background: #FFF;
+  border: 1px solid #999;
+  min-width: 150px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.2);
+}
+.berry_menu_widget .berry_menu_widgetitem {
+  cursor: pointer;
+  border-bottom: 1px solid #DDD;
+  padding: 3px 3px 3px 25px;
+}
+.berry_menu_widget .berry_menu_widgetitem:first-of-type {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.berry_menu_widget .berry_menu_widgetitem:last-of-type {
+  border-bottom: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.berry_menu_widget .berry_menu_widgetitem.close_menu {
+  background: url('../../images/icons/arrow_left.png') no-repeat 3px center;
+}
+.berry_menu_widget .berry_menu_widgetitem.edit {
+  background: url('../../images/icons/edit.png') no-repeat 3px center;
+}
+.berry_menu_widget .berry_menu_widgetitem.delete {
+  background: url('../../images/icons/delete.png') no-repeat 3px center;
+}
+.berry_menu_widget .berry_menu_widgetitem:hover {
+  background-color: #EEF;
+}

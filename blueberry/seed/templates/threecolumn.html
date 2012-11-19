@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-	three column
+
+	<div class='left-column'> {{ controller.panels.left_column }} </div>
+	<div class='middle-column'>{{ controller.panels.middle_column }}</div>
+	<div class='right-column'>{{ controller.panels.right_column }}</div>
+	
 {% endblock %}

@@ -1,4 +1,5 @@
 <div class='berry_edit_panel'>	
-	{{ content|safe }}	
-	<div class='berry_add_block'>Add Block</div>
+	<div class='panel_title'>{{ panel.model.alias }}</div>
+	{{ content|safe }}
+	<a href='{{ add_url }}' class='berry_add_block'>Add Block</a>
 </div>
